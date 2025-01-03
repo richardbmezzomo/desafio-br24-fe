@@ -35,7 +35,7 @@ export const Edit = () => {
     const fetchCompany = async () => {
       try {
         const response = await fetch(
-          `https://api.richardbmezzomo.site//companies/${id}`,
+          `https://api.richardbmezzomo.site/companies/${id}`,
         )
         if (response.ok) {
           const data: Company = await response.json()
@@ -116,7 +116,7 @@ export const Edit = () => {
 
     try {
       const response = await fetch(
-        `https://api.richardbmezzomo.site/companies/contact/${contactId}`,
+        `http://localhost:5173/companies/contact/${contactId}`,
         {
           method: 'DELETE',
         },
