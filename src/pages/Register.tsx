@@ -72,13 +72,16 @@ export const Register = () => {
 
     setErrors({})
     try {
-      const response = await fetch('http://89.116.214.70:4000/companies', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        'https://84b7-2a02-4780-14-5ef7-00-1.ngrok-free.app/companies',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(company),
         },
-        body: JSON.stringify(company),
-      })
+      )
 
       if (response.ok) {
         const data = await response.json()

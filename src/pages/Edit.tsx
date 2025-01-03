@@ -35,7 +35,7 @@ export const Edit = () => {
     const fetchCompany = async () => {
       try {
         const response = await fetch(
-          `http://89.116.214.70:4000/companies/${id}`,
+          `https://84b7-2a02-4780-14-5ef7-00-1.ngrok-free.app/companies/${id}`,
         )
         if (response.ok) {
           const data: Company = await response.json()
@@ -85,7 +85,7 @@ export const Edit = () => {
     setErrors({})
     try {
       const response = await fetch(
-        `http://89.116.214.70:4000/companies/${id}`,
+        `https://84b7-2a02-4780-14-5ef7-00-1.ngrok-free.app/companies/${id}`,
         {
           method: 'PUT',
           headers: {
@@ -123,7 +123,7 @@ export const Edit = () => {
 
     try {
       const response = await fetch(
-        `http://89.116.214.70:4000/companies/contact/${contactId}`,
+        `https://84b7-2a02-4780-14-5ef7-00-1.ngrok-free.app/companies/contact/${contactId}`,
         {
           method: 'DELETE',
         },
