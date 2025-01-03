@@ -64,7 +64,6 @@ export const Edit = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Filtra contatos válidos (com name e lastName preenchidos)
     const validContacts = company.contacts.filter(
       (contact) => contact.name.trim() !== '' && contact.lastName.trim() !== '',
     )
@@ -113,13 +112,7 @@ export const Edit = () => {
   }
 
   const handleDeleteContact = async (contactId?: number) => {
-    if (!contactId) {
-      setCompany((prev) => ({
-        ...prev,
-        contacts: prev.contacts.filter((contact) => contact.id !== contactId),
-      }))
-      return
-    }
+    if (!contactId) return
 
     try {
       const response = await fetch(
@@ -135,6 +128,8 @@ export const Edit = () => {
           variant: 'success',
           duration: 1500,
         })
+
+        // Remove apenas o contato com o ID fornecido
         setCompany((prev) => ({
           ...prev,
           contacts: prev.contacts.filter((contact) => contact.id !== contactId),
