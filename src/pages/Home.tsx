@@ -35,9 +35,12 @@ export const Home = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      const response = await fetch(`http://localhost:3000/companies/${id}`, {
-        method: 'DELETE',
-      })
+      const response = await fetch(
+        `http://89.116.214.70:4000/companies/${id}`,
+        {
+          method: 'DELETE',
+        },
+      )
 
       if (response.ok) {
         setCompanies((prevCompanies) =>
@@ -54,7 +57,7 @@ export const Home = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await fetch('http://localhost:3000/companies/')
+        const response = await fetch('http://89.116.214.70:4000/companies/')
         const data: Company[] = await response.json()
         setCompanies(data)
       } catch (error) {
