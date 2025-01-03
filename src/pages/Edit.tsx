@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { z } from 'zod'
 import { toast } from '@/hooks/use-toast'
+import { FaTrash } from 'react-icons/fa'
 
 interface Contact {
   id?: number
@@ -21,7 +22,10 @@ const companySchema = z.object({
 export const Edit = () => {
   const [company, setCompany] = useState<Company>({
     title: '',
-    contacts: [],
+    contacts: [
+      { name: '', lastName: '' },
+      { name: '', lastName: '' },
+    ],
   })
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
   const { id } = useParams<{ id: string }>()
@@ -33,7 +37,8 @@ export const Edit = () => {
         const response = await fetch(`http://localhost:3000/companies/${id}`)
         if (response.ok) {
           const data: Company = await response.json()
-          setCompany(data)
+
+          setCompany({ ...data })
         } else {
           console.error('Erro ao carregar empresa:', await response.text())
         }
@@ -46,32 +51,25 @@ export const Edit = () => {
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    index?: number,
-    field?: 'name' | 'lastName',
+    index: number,
+    field: 'name' | 'lastName',
   ) => {
-    const { name, value } = e.target
-
-    if (name) {
-      setErrors((prevErrors) => {
-        const newErrors = { ...prevErrors }
-        delete newErrors[name]
-        return newErrors
-      })
-    }
-
-    if (index !== undefined && field) {
-      const updatedContacts = [...company.contacts]
-      updatedContacts[index][field] = value
-      setCompany({ ...company, contacts: updatedContacts })
-    } else {
-      setCompany({ ...company, [name]: value })
-    }
+    const updatedContacts = [...company.contacts]
+    updatedContacts[index][field] = e.target.value
+    setCompany({ ...company, contacts: updatedContacts })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const validation = companySchema.safeParse(company)
+    // Filtra contatos válidos (com name e lastName preenchidos)
+    const validContacts = company.contacts.filter(
+      (contact) => contact.name.trim() !== '' && contact.lastName.trim() !== '',
+    )
+
+    const companyToSubmit = { ...company, contacts: validContacts }
+
+    const validation = companySchema.safeParse(companyToSubmit)
     if (!validation.success) {
       const formattedErrors: { [key: string]: string } = {}
       validation.error.errors.forEach((err) => {
@@ -89,7 +87,7 @@ export const Edit = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(company),
+        body: JSON.stringify(companyToSubmit),
       })
 
       if (response.ok) {
@@ -103,6 +101,41 @@ export const Edit = () => {
         }, 1000)
       } else {
         console.error('Erro ao atualizar empresa:', await response.text())
+      }
+    } catch (error) {
+      console.error('Erro de conexão:', error)
+    }
+  }
+
+  const handleDeleteContact = async (contactId?: number) => {
+    if (!contactId) {
+      setCompany((prev) => ({
+        ...prev,
+        contacts: prev.contacts.filter((contact) => contact.id !== contactId),
+      }))
+      return
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/companies/contact/${contactId}`,
+        {
+          method: 'DELETE',
+        },
+      )
+
+      if (response.ok) {
+        toast({
+          description: 'Contato removido com sucesso!',
+          variant: 'success',
+          duration: 1500,
+        })
+        setCompany((prev) => ({
+          ...prev,
+          contacts: prev.contacts.filter((contact) => contact.id !== contactId),
+        }))
+      } else {
+        console.error('Erro ao remover contato:', await response.text())
       }
     } catch (error) {
       console.error('Erro de conexão:', error)
@@ -124,7 +157,7 @@ export const Edit = () => {
             type="text"
             name="title"
             value={company.title}
-            onChange={handleInputChange}
+            onChange={(e) => setCompany({ ...company, title: e.target.value })}
             className={`w-full p-4 rounded-lg text-gray-900 ${
               errors.title
                 ? 'border-red-500 focus:ring-red-500'
@@ -138,29 +171,51 @@ export const Edit = () => {
         </div>
 
         {company.contacts.map((contact, index) => (
-          <div key={contact.id || index} className="mb-6">
-            <label className="block mb-2 text-gray-300 font-medium">
-              Nome do Contato {index + 1}
-            </label>
-            <input
-              type="text"
-              value={contact.name}
-              onChange={(e) => handleInputChange(e, index, 'name')}
-              className="w-full p-4 rounded-lg text-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition mb-4"
-              placeholder={`Digite o nome do contato ${index + 1}`}
-            />
-            <label className="block mb-2 text-gray-300 font-medium">
-              Sobrenome do Contato {index + 1}
-            </label>
-            <input
-              type="text"
-              value={contact.lastName}
-              onChange={(e) => handleInputChange(e, index, 'lastName')}
-              className="w-full p-4 rounded-lg text-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-              placeholder={`Digite o sobrenome do contato ${index + 1}`}
-            />
+          <div key={index} className="mb-6 flex items-center gap-4">
+            <div className="flex-1">
+              <label className="block mb-2 text-gray-300 font-medium">
+                Nome do Contato {index + 1}
+              </label>
+              <input
+                type="text"
+                value={contact.name}
+                onChange={(e) => handleInputChange(e, index, 'name')}
+                className="w-full p-4 rounded-lg text-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition mb-4"
+                placeholder={`Digite o nome do contato ${index + 1}`}
+              />
+              <label className="block mb-2 text-gray-300 font-medium">
+                Sobrenome do Contato {index + 1}
+              </label>
+              <input
+                type="text"
+                value={contact.lastName}
+                onChange={(e) => handleInputChange(e, index, 'lastName')}
+                className="w-full p-4 rounded-lg text-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                placeholder={`Digite o sobrenome do contato ${index + 1}`}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => handleDeleteContact(contact.id)}
+              className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition"
+            >
+              <FaTrash />
+            </button>
           </div>
         ))}
+
+        <button
+          type="button"
+          onClick={() =>
+            setCompany((prev) => ({
+              ...prev,
+              contacts: [...prev.contacts, { name: '', lastName: '' }],
+            }))
+          }
+          className="mb-6 bg-green-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-green-500 transform transition-transform duration-200 hover:scale-105 text-lg font-medium"
+        >
+          Adicionar Contato
+        </button>
 
         <button
           type="submit"
