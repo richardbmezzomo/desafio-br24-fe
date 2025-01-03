@@ -35,9 +35,12 @@ export const Home = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      const response = await fetch(`https://89.116.214.70/companies/${id}`, {
-        method: 'DELETE',
-      })
+      const response = await fetch(
+        `https://api.richardbmezzomo.site/companies/${id}`,
+        {
+          method: 'DELETE',
+        },
+      )
 
       if (response.ok) {
         setCompanies((prevCompanies) =>
@@ -54,7 +57,9 @@ export const Home = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await fetch('https://89.116.214.70/companies/')
+        const response = await fetch(
+          'https://api.richardbmezzomo.site/companies/',
+        )
         const data: Company[] = await response.json()
         setCompanies(data)
       } catch (error) {

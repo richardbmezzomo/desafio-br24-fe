@@ -34,7 +34,9 @@ export const Edit = () => {
   useEffect(() => {
     const fetchCompany = async () => {
       try {
-        const response = await fetch(`https://89.116.214.70/companies/${id}`)
+        const response = await fetch(
+          `https://api.richardbmezzomo.site//companies/${id}`,
+        )
         if (response.ok) {
           const data: Company = await response.json()
 
@@ -82,13 +84,16 @@ export const Edit = () => {
 
     setErrors({})
     try {
-      const response = await fetch(`https://89.116.214.70/companies/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `https://api.richardbmezzomo.site/companies/${id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(companyToSubmit),
         },
-        body: JSON.stringify(companyToSubmit),
-      })
+      )
 
       if (response.ok) {
         toast({
@@ -118,7 +123,7 @@ export const Edit = () => {
 
     try {
       const response = await fetch(
-        `https://89.116.214.70/companies/contact/${contactId}`,
+        `https://api.richardbmezzomo.site/companies/contact/${contactId}`,
         {
           method: 'DELETE',
         },

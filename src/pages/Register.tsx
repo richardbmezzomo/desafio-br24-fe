@@ -72,13 +72,16 @@ export const Register = () => {
 
     setErrors({})
     try {
-      const response = await fetch('https://89.116.214.70/companies', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        'https://api.richardbmezzomo.site/companies',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(company),
         },
-        body: JSON.stringify(company),
-      })
+      )
 
       if (response.ok) {
         const data = await response.json()
