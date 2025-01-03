@@ -34,9 +34,7 @@ export const Edit = () => {
   useEffect(() => {
     const fetchCompany = async () => {
       try {
-        const response = await fetch(
-          `https://84b7-2a02-4780-14-5ef7-00-1.ngrok-free.app/companies/${id}`,
-        )
+        const response = await fetch(`https://89.116.214.70/companies/${id}`)
         if (response.ok) {
           const data: Company = await response.json()
 
@@ -84,16 +82,13 @@ export const Edit = () => {
 
     setErrors({})
     try {
-      const response = await fetch(
-        `https://84b7-2a02-4780-14-5ef7-00-1.ngrok-free.app/companies/${id}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(companyToSubmit),
+      const response = await fetch(`https://89.116.214.70/companies/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      )
+        body: JSON.stringify(companyToSubmit),
+      })
 
       if (response.ok) {
         toast({
@@ -123,7 +118,7 @@ export const Edit = () => {
 
     try {
       const response = await fetch(
-        `https://84b7-2a02-4780-14-5ef7-00-1.ngrok-free.app/companies/contact/${contactId}`,
+        `https://89.116.214.70/companies/contact/${contactId}`,
         {
           method: 'DELETE',
         },
