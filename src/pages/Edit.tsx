@@ -111,12 +111,18 @@ export const Edit = () => {
     }
   }
 
-  const handleDeleteContact = async (contactId?: number) => {
-    if (!contactId) return
+  const handleDeleteContact = async (contactId?: number, index?: number) => {
+    if (!contactId) {
+      setCompany((prev) => ({
+        ...prev,
+        contacts: prev.contacts.filter((_, idx) => idx !== index),
+      }))
+      return
+    }
 
     try {
       const response = await fetch(
-        `http://localhost:5173/companies/contact/${contactId}`,
+        `https://api.richardbmezzomo.site/companies/contact/${contactId}`,
         {
           method: 'DELETE',
         },
@@ -129,7 +135,6 @@ export const Edit = () => {
           duration: 1500,
         })
 
-        // Remove apenas o contato com o ID fornecido
         setCompany((prev) => ({
           ...prev,
           contacts: prev.contacts.filter((contact) => contact.id !== contactId),
@@ -196,7 +201,7 @@ export const Edit = () => {
             </div>
             <button
               type="button"
-              onClick={() => handleDeleteContact(contact.id)}
+              onClick={() => handleDeleteContact(contact.id, index)} // Passa o `index` aqui
               className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition"
             >
               <FaTrash />
