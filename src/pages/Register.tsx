@@ -72,7 +72,7 @@ export const Register = () => {
 
     setErrors({})
     try {
-      const response = await fetch('http://localhost:3000/companies', {
+      const response = await fetch('http://89.116.214.70:4000/companies', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

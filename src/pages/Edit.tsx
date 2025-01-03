@@ -34,7 +34,9 @@ export const Edit = () => {
   useEffect(() => {
     const fetchCompany = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/companies/${id}`)
+        const response = await fetch(
+          `http://89.116.214.70:4000/companies/${id}`,
+        )
         if (response.ok) {
           const data: Company = await response.json()
 
@@ -82,13 +84,16 @@ export const Edit = () => {
 
     setErrors({})
     try {
-      const response = await fetch(`http://localhost:3000/companies/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `http://89.116.214.70:4000/companies/${id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(companyToSubmit),
         },
-        body: JSON.stringify(companyToSubmit),
-      })
+      )
 
       if (response.ok) {
         toast({
@@ -118,7 +123,7 @@ export const Edit = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/companies/contact/${contactId}`,
+        `http://89.116.214.70:4000/companies/contact/${contactId}`,
         {
           method: 'DELETE',
         },
